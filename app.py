@@ -8,6 +8,10 @@ app = Flask(__name__)
 def index():
     response = make_response(render_template('index.html'))
     response.headers['X-HFlags'] = 'Integer-luctus-felis'
+    response.headers['X-HFlags-found'] = 'False'
+    flagFound = request.headers.get('X-HFlags-found')
+    if (flagFound == "True"):
+        return "Quisque-placerat-commodo"
     return response
 
 @app.route('/user/login', methods = ['POST'])

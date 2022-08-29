@@ -1,7 +1,8 @@
-SOURCE-PAGE,    Aenean-non-orci
-HEADERS,        Integer-luctus-felis
-STATIC,         Phasellus-blandit-turpis
-ADMIN-PAGE,     Mauris-fermentum-massa
+SOURCE-PAGE,                Aenean-non-orci
+RESPONSE-HEADERS,           Integer-luctus-felis
+REQUEST-HEADERS,            Quisque-placerat-commodo
+STATIC,                     Phasellus-blandit-turpis
+ADMIN-PAGE,                 Mauris-fermentum-massa
     # 'OR 'test'='test
     # SELECT CASE WHEN 'pib'=''OR 'test'='test' THEN True ELSE False END;
-NOT-FOUND,      Maecenas-sit-amet
+NOT-FOUND,                  Maecenas-sit-amet
