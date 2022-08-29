@@ -35,10 +35,14 @@ def login_post():
 def static_dir():
     return render_template('static-listing.html')
 
+@app.route('/admin')
+def admin():
+    return redirect('/user/login')
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
 
 if (__name__ == "__main__"):
-    app.run(debug = True)
+    app.run(debug = True, host="0.0.0.0")
