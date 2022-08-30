@@ -6,12 +6,21 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    response = make_response(render_template('index.html'))
-    response.headers['X-HFlags'] = 'Integer-luctus-felis'
-    response.headers['X-HFlags-found'] = 'False'
+    # Check and set isAdmin cookie    
+    adminCookie = request.cookies.get('isAdmin') == "True"
+    if (adminCookie == True):
+        response = make_response('Morbi-mollis-bibendum')
+        response.set_cookie('isAdmin', 'False')
+        return response
+    # Check request header flag
     flagFound = request.headers.get('X-HFlags-found')
     if (flagFound == "True"):
         return "Quisque-placerat-commodo"
+    # Build classic response
+    response = make_response(render_template('index.html'))
+    response.headers['X-HFlags'] = 'Integer-luctus-felis'
+    response.headers['X-HFlags-found'] = 'False'
+    response.set_cookie('isAdmin', 'False')
     return response
 
 @app.route('/user/login', methods = ['POST'])
@@ -22,13 +31,15 @@ def login():
     con = sqlite3.connect("sqlite3.db")
     cur = con.cursor()
     cmd = "SELECT CASE WHEN 'pib'='"+ passwd +"' AND 'pib'='"+ uname +"' THEN True ELSE False END;"
-    print("[DEBUG] Login page :", cmd)
     try:
         data = cur.execute(cmd).fetchone()[0] == 1
     except:
         return redirect('/user/login')
+    # Connect user by adding a 'admin' token in cookies
     if (data):
-        return "Mauris-fermentum-massa"
+        response = make_response(redirect('/admin'))
+        response.set_cookie("token", "q5vpeVphHnaMxQ2eh5brGkaGjUsOk87f")
+        return response
     return redirect('/user/login')
 
 @app.route('/user/login', methods = ['GET'])
@@ -41,12 +52,24 @@ def static_dir():
 
 @app.route('/admin')
 def admin():
-    return redirect('/user/login')
+    # Check admin token or redirect 
+    token = request.cookies.get('token')
+    if (token != "q5vpeVphHnaMxQ2eh5brGkaGjUsOk87f"):
+        return redirect('/user/login')
+    userAgent = request.headers.get('User-Agent')
+    if (userAgent == "Admin/18.2"):
+        return render_template('/admin_token.html')
+    return render_template('/admin.html')
+
+@app.route('/admin', methods = ['POST'])
+def logout():
+    response = make_response(redirect('/admin'))
+    response.set_cookie("token", "", expires=0)
+    return response
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
-
 
 if (__name__ == "__main__"):
     app.run(debug = True, host="0.0.0.0")

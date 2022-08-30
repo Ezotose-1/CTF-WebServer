@@ -1,8 +1,11 @@
 SOURCE-PAGE,                Aenean-non-orci
+SOURCE-COMMENT,             Integer-nec-eros
 RESPONSE-HEADERS,           Integer-luctus-felis
 REQUEST-HEADERS,            Quisque-placerat-commodo
 STATIC,                     Phasellus-blandit-turpis
 ADMIN-PAGE,                 Mauris-fermentum-massa
     # 'OR 'test'='test
-    # SELECT CASE WHEN 'pib'=''OR 'test'='test' THEN True ELSE False END;
 NOT-FOUND,                  Maecenas-sit-amet
+COOKIE,                     Morbi-mollis-bibendum
+USER-AGENT,                 Morbi-at-turpis
+IMAGE,                      Nullam-imperdiet-in%
