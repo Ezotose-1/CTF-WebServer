@@ -26,13 +26,12 @@ def index():
 @app.route('/user/login', methods = ['POST'])
 def login():
     uname, passwd = request.form['username'], request.form['password']
-
     # Login to Allow SQL injection #
-    con = sqlite3.connect("sqlite3.db")
-    cur = con.cursor()
-    cmd = "SELECT CASE WHEN 'pib'='"+ passwd +"' AND 'pib'='"+ uname +"' THEN True ELSE False END;"
+    SQLcon = sqlite3.connect("sqlite3.db")
+    SQLcur = SQLcon.cursor()
+    SQLcmd = "SELECT CASE WHEN 'pib'='"+ passwd +"' AND 'pib'='"+ uname +"' THEN True ELSE False END;"
     try:
-        data = cur.execute(cmd).fetchone()[0] == 1
+        data = SQLcur.execute(SQLcmd).fetchone()[0] == 1
     except:
         return redirect('/user/login')
     # Connect user by adding a 'admin' token in cookies
@@ -48,6 +47,7 @@ def login_post():
 
 @app.route('/static')
 def static_dir():
+    # Render a directory listing for /static files
     return render_template('static-listing.html')
 
 @app.route('/admin')
@@ -56,6 +56,7 @@ def admin():
     token = request.cookies.get('token')
     if (token != "q5vpeVphHnaMxQ2eh5brGkaGjUsOk87f"):
         return redirect('/user/login')
+    # Check userAgent for Admin browser
     userAgent = request.headers.get('User-Agent')
     if (userAgent == "Admin/18.2"):
         return render_template('/admin_token.html')
