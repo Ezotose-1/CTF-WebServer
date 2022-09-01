@@ -10,7 +10,7 @@ flag {
 .container-e {
     background-color: #272c34;
     position: absolute;
-    top: 0;
+    top: 56px;
     left: 0; 
     right: 0;
     bottom: 0;
@@ -20,4 +20,19 @@ flag {
 
 .title {
     margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.article-color {
+    background-color: #272c34;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(0, 0, 0, 0.25) 0px 2px 6px 2px;
+}
+
+.navbar-color {
+    background-color: #26282b;
+    color: #d0cdca;
+}
+
+.card {
+    margin-bottom: 80px;
 }

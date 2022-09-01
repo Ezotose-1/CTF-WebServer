@@ -5,14 +5,52 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Hello World</h1>
+<!--
+    
+-->
 
+    <!-- MAIN PAGE CONTAINER -->
+    <div class="container">
 
-    <a href="/user/login" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Admin Login</a>
+        <h1 class="text-center title">Hello World!</h1>
 
+        <!-- ARTICLE -->
+        <div class="article-color card">
+            <div class="card-header">
+                Article title
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    Text Title
+                </h5>
+                <p class="card-text">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam reiciendis deserunt ipsam sint? Nostrum sequi molestiae obcaecati minus, soluta vel! Libero vitae quisquam sed impedit doloremque quia minima, possimus mollitia!
+                </p>
+                <footer class="blockquote-footer">Admin - <cite title="Source Title">Sept. 20, 2021, 8:50 p.m.</cite></footer>
+            </div>
+        </div>
+        <flag>Aenean-non-orci</flag>
+        <!-- ! ARTICLE -->
 
-<flag>Aenean-non-orci</flag>
-<br>
-<img src="{{ url_for('static', filename='hidden.jpg') }}">
+        <!-- ARTICLE -->
+        <div class="article-color card">
+            <div class="card-header">
+                Article title
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    Text Title
+                </h5>
+                <p class="card-text">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam reiciendis deserunt ipsam sint? Nostrum sequi molestiae obcaecati minus, soluta vel! Libero vitae quisquam sed impedit doloremque quia minima, possimus mollitia!
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+                <img src="{{ url_for('static', filename='hidden.jpg') }}">
 
+                <footer class="blockquote-footer">Admin - <cite title="Source Title">Sept. 20, 2021, 8:50 p.m.</cite></footer>
+            </div>
+        </div>
+        <!-- ! ARTICLE -->
+
+    </div>
 {% endblock %}

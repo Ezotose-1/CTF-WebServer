@@ -12,10 +12,10 @@
             Welcome back <i>Mauris-fermentum-massa</i>.
         </p>
         <p>
-            Admin systems are operational, please connect using a local 'Admin' browser with the version 18.2 to use all functionalities and decrypt the code.
+            Admin systems are operational, {% if code == 'Morbi-at-turpis' %} User-agent verified. {% else %}please connect using a local 'Admin' browser with the version 18.2 to use all functionalities and decrypt the code. {% endif %}
         </p>
         <p>
-            <b>Local access code :</b> @;]pb(:kR[>"(&l[L)V&
+            <b>Local access code : {{ code }}</b> 
         </p>
         <form method="POST">
             <button type="submit" class="btn btn-primary">Log-out</button>

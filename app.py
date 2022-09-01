@@ -17,7 +17,7 @@ def index():
     if (flagFound == "True"):
         return "Quisque-placerat-commodo"
     # Build classic response
-    response = make_response(render_template('index.html'))
+    response = make_response(render_template('index.html', title="home"))
     response.headers['X-HFlags'] = 'Integer-luctus-felis'
     response.headers['X-HFlags-found'] = 'False'
     response.set_cookie('isAdmin', 'False')
@@ -45,10 +45,14 @@ def login():
 def login_post():
     return render_template('user/login.html')
 
-@app.route('/static')
+# Render a directory listing for /static/ files
+@app.route('/static/')
 def static_dir():
-    # Render a directory listing for /static files
     return render_template('static-listing.html')
+
+@app.route('/ctf-rules')
+def rules():
+    return render_template('rules.html', title="rules")
 
 @app.route('/admin')
 def admin():
@@ -59,8 +63,8 @@ def admin():
     # Check userAgent for Admin browser
     userAgent = request.headers.get('User-Agent')
     if (userAgent == "Admin/18.2"):
-        return render_template('/admin_token.html')
-    return render_template('/admin.html')
+        return render_template('/admin.html', code="Morbi-at-turpis")
+    return render_template('/admin.html', code="@;]pb(:kR[>'(&l[L)V&")
 
 @app.route('/admin', methods = ['POST'])
 def logout():
