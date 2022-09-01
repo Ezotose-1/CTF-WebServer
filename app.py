@@ -90,10 +90,16 @@ def article():
     # Allow SQL injection in URL #
     SQLcon = sqlite3.connect("sqlite3.db")
     SQLcur = SQLcon.cursor()
-    SQLcmd = "SELECT CASE WHEN 'secretTitle'='"+ title +"' THEN True ELSE False END;"
+    # Create Table with data
+    SQLcmd = "CREATE TABLE IF NOT EXISTS 'articles' ('title' varchar(50) NOT NULL DEFAULT 'Article title');"
+    SQLcur.execute(SQLcmd)
+    SQLcmd = "INSERT INTO 'articles' ('title') VALUES ('Article Title'), ('Article Title2');"
+    SQLcur.execute(SQLcmd)
+    # Injection
+    SQLcmd = "SELECT * FROM articles WHERE title='"+ title +"';"
     print(SQLcmd)
     try:
-        data = SQLcur.execute(SQLcmd).fetchone()[0] == 1
+        data = SQLcur.execute(SQLcmd).fetchone() != None
     except:
         return "SQL Error please contact administrator. This incident will be reported.", 500
     print(data)
