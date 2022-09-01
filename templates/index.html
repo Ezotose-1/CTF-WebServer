@@ -13,7 +13,9 @@
     <div class="container">
 
         <h1 class="text-center title">Hello World!</h1>
-
+        
+        <h2>Last articles</h2>
+        
         <!-- ARTICLE -->
         <div class="article-color card">
             <div class="card-header">
@@ -26,7 +28,7 @@
                 <p class="card-text">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam reiciendis deserunt ipsam sint? Nostrum sequi molestiae obcaecati minus, soluta vel! Libero vitae quisquam sed impedit doloremque quia minima, possimus mollitia!
                 </p>
-                <footer class="blockquote-footer">Admin - <cite title="Source Title">Sept. 20, 2021, 8:50 p.m.</cite></footer>
+                <footer class="blockquote-footer">Admin - <cite title="Source Title">Sept. 1, 2022, 5:35 p.m.</cite></footer>
             </div>
         </div>
         <flag>Aenean-non-orci</flag>
@@ -35,7 +37,7 @@
         <!-- ARTICLE -->
         <div class="article-color card">
             <div class="card-header">
-                Article title
+                Article title2
             </div>
             <div class="card-body">
                 <h5 class="card-title">
@@ -47,10 +49,25 @@
                 </p>
                 <img src="{{ url_for('static', filename='hidden.jpg') }}">
 
-                <footer class="blockquote-footer">Admin - <cite title="Source Title">Sept. 20, 2021, 8:50 p.m.</cite></footer>
+                <footer class="blockquote-footer">Admin - <cite title="Source Title">Sept. 20, 2022, 8:50 a.m.</cite></footer>
             </div>
         </div>
         <!-- ! ARTICLE -->
+
+        <!-- STILL WORK IN PROGRESS -->
+        <!--
+        <hr style="border-top: 1px solid white;">
+        <h2>//TODO TITLE</h2>
+        <form action="/article" method="post" class="form-row">
+            <select id="inputState" class="form-control col-md-2">
+                <option selected>Review Article...</option>
+                <option>Article title</option>
+                <option>Article title2</option>
+            </select>
+            <input disabled type="submit" value="WORK IN PROGRESS" name="accessbtt" class="btn btn-primary col-md-2">
+        </form>
+        -->
+        <!-- ! WIP -->
 
     </div>
 {% endblock %}
