@@ -77,10 +77,31 @@ def logout():
 def page_not_found(e):
     return render_template('404.html'), 404
 
-@app.route('/article', methods = ["POST"])
-def article():
-    return "Aliquam-eleifend-ornare"
+@app.route('/', methods = ["POST"])
+def index_POST():
+    return redirect('/article?title=%s' % request.form['name'])
 
+@app.route('/article', methods = ["GET"])
+def article():
+    title = request.args.get("title")
+    print(title)
+    if (title in ['Article title', 'Article title2']):
+        return "Aliquam-eleifend-ornare" 
+    # Allow SQL injection in URL #
+    SQLcon = sqlite3.connect("sqlite3.db")
+    SQLcur = SQLcon.cursor()
+    SQLcmd = "SELECT CASE WHEN 'secretTitle'='"+ title +"' THEN True ELSE False END;"
+    print(SQLcmd)
+    try:
+        data = SQLcur.execute(SQLcmd).fetchone()[0] == 1
+    except:
+        return "SQL Error please contact administrator. This incident will be reported.", 500
+    print(data)
+    if (data == False):
+        return "No data found in database"
+    if (data == True):
+        return "In-vitae-laoreet"
+    return "Aliquam-eleifend-ornare" 
 
 if (__name__ == "__main__"):
     app.run(debug = True, host="0.0.0.0")
