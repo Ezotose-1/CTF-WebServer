@@ -1,6 +1,7 @@
 from flask import *
 
 import sqlite3
+import hashlib
 
 app = Flask(__name__)
 
@@ -108,6 +109,21 @@ def article():
     if (data == True):
         return "In-vitae-laoreet"
     return "Aliquam-eleifend-ornare" 
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html', title='contact')
+
+@app.route('/redirect/<sum>')
+def href_redirect(sum):
+    link = request.args.get("href")
+    hash = hashlib.md5(link.encode()).hexdigest()
+    if (sum != hash):
+        return "Error hash invalid."
+    if not(link in ["https://twitter.com", "https://www.instagram.com", "https://www.google.com"]):
+        return "<h3>Nice job good redirection.</h3> Aliquam-erat-volutpat"
+    return redirect(link)
+
 
 if (__name__ == "__main__"):
     app.run(debug = True, host="0.0.0.0")
