@@ -120,7 +120,7 @@ def href_redirect(sum):
     hash = hashlib.md5(link.encode()).hexdigest()
     if (sum != hash):
         return "Error hash invalid."
-    if not(link in ["https://twitter.com", "https://www.instagram.com", "https://www.google.com"]):
+    if not(link in ["https://twitter.com", "https://www.instagram.com", "https://www.google.com/"]):
         return "<h3>Nice job good redirection.</h3> Aliquam-erat-volutpat"
     return redirect(link)
 
