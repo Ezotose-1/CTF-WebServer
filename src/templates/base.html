@@ -22,6 +22,12 @@
     <!-- PAGE DATA--->{% block head %} {% endblock %}
 </head>
 
+<style>
+    .nav-item {
+        margin-left: 10px;
+    }
+</style>
+
 <body>
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-color">
@@ -34,13 +40,13 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item {% if title == 'home' %}active{% endif %}">
-                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/"> <i class="fa-solid fa-house"></i> Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if title == 'contact' %}active{% endif %}" href="/contact">Contact<span class="sr-only">(current)</span></a>
+                    <a class="nav-link {% if title == 'contact' %}active{% endif %}" href="/contact"> <i class="fa-regular fa-user"></i> Contact<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if title == 'rules' %}active{% endif %}" href="/ctf-rules">Rules/Info<span class="sr-only">(current)</span></a>
+                    <a class="nav-link {% if title == 'rules' %}active{% endif %}" href="/ctf-rules"> <i class="fa-solid fa-circle-info"></i>  Rules/Info<span class="sr-only">(current)</span></a>
                 </li>
             </ul>
             <span class="navbar-text">
