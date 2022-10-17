@@ -1,10 +1,13 @@
 from flask import *
+from flask_cors import CORS
 
 import sqlite3
 import hashlib
 
 app = Flask(__name__)
 
+# Allow Cross-origin resource sharing
+CORS(app)
 
 @app.route('/')
 def index():
@@ -13,13 +16,13 @@ def index():
         - Cookie modification
         - Header value
         - Header modification
+        - Hidden 'WIP' code with a http form
         - HTML display none 
         - HTML comment
-        - Hidden 'WIP' code with a http form
     
     :return: Built response
     """
-    # Check and set isAdmin cookie    
+    # Check and set isAdmin cookie
     adminCookie = request.cookies.get('isAdmin') == "True"
     if (adminCookie == True):
         response = make_response('Morbi-mollis-bibendum')
@@ -30,7 +33,7 @@ def index():
     flagFound = request.headers.get('X-HFlags-found')
     if (flagFound == "True"):
         return "Quisque-placerat-commodo"
-    
+
     # Build classic response
     response = make_response(render_template('index.html', title="home"))
     response.headers['X-HFlags'] = 'Integer-luctus-felis'
@@ -41,7 +44,16 @@ def index():
 
 @app.route('/', methods = ["POST"])
 def index_POST():
-    """ POST Route to index page '/' from the hidden form """
+    """ POST Route to index page '/' from the hidden form
+    Door to redirect page.
+
+    Flags:
+        - XSRF 
+    """    
+    if  ('HTTP_ORIGIN' in request.environ) and \
+        (request.environ['HTTP_SEC_FETCH_SITE'] == 'cross-site'):
+        return 'Vestibulum-sagittis-sagittis'
+
     if not('name' in request.form):
         return redirect('/')
     return redirect('/article?title=%s' % request.form['name'])
