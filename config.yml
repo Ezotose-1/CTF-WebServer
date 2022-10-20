@@ -1,0 +1,17 @@
+flags:
+    source-hide:        Aenean-non-orci
+    source-comment:     Integer-nec-eros
+    response-header:    Integer-luctus-felis
+    request-header:     Quisque-placerat-commodo
+    # Harcoded in the CSV
+    static-folder:      Phasellus-blandit-turpis
+    admin-page:         Mauris-fermentum-massa
+    not-found:          Maecenas-sit-amet
+    cookie:             Morbi-mollis-bibendum
+    user-agent:         Morbi-at-turpis
+    # Hardcoded in the image.
+    image:              Nullam-imperdiet-in
+    hidden-form-index:  Aliquam-eleifend-ornare
+    url-sql-inject:     In-vitae-laoreet
+    href-redirect:      Aliquam-erat-volutpat
+    xsrf:               Vestibulum-sagittis-sagittis

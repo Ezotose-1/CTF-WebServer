@@ -1,10 +1,13 @@
 from flask import *
 from flask_cors import CORS
+import yaml
 
 import sqlite3
 import hashlib
 
 app = Flask(__name__)
+
+FLAGS = None
 
 # Allow Cross-origin resource sharing
 CORS(app)
@@ -25,18 +28,22 @@ def index():
     # Check and set isAdmin cookie
     adminCookie = request.cookies.get('isAdmin') == "True"
     if (adminCookie == True):
-        response = make_response('Morbi-mollis-bibendum')
+        response = make_response( FLAGS['cookie'] )
         response.set_cookie('isAdmin', 'False')
         return response
     
     # Check request header flag
     flagFound = request.headers.get('X-HFlags-found')
     if (flagFound == "True"):
-        return "Quisque-placerat-commodo"
+        return FLAGS['request-header']
 
     # Build classic response
-    response = make_response(render_template('index.html', title="home"))
-    response.headers['X-HFlags'] = 'Integer-luctus-felis'
+    response = make_response(render_template('index.html',
+                        title="home",
+                        hideFlag=FLAGS['source-hide'],
+                        commentFlag=FLAGS['source-comment']
+                    ))
+    response.headers['X-HFlags'] = FLAGS['response-header']
     response.headers['X-HFlags-found'] = 'False'
     response.set_cookie('isAdmin', 'False')
     return response
@@ -52,7 +59,7 @@ def index_POST():
     """    
     if  ('HTTP_ORIGIN' in request.environ) and \
         (request.environ['HTTP_SEC_FETCH_SITE'] == 'cross-site'):
-        return 'Vestibulum-sagittis-sagittis'
+        return FLAGS['xsrf']
 
     if not('name' in request.form):
         return redirect('/')
@@ -132,8 +139,8 @@ def admin():
     # Check userAgent for Admin browser
     userAgent = request.headers.get('User-Agent')
     if (userAgent == "Admin/18.2"):
-        return render_template('/admin.html', code="Morbi-at-turpis")
-    return render_template('/admin.html', code="@;]pb(:kR[>'(&l[L)V&")
+        return render_template('/admin.html', code=FLAGS['user-agent'], flag=FLAGS['admin-page'])
+    return render_template('/admin.html', code="@;]pb(:kR[>'(&l[L)V&", flag=FLAGS['admin-page'])
 
 
 @app.route('/admin', methods = ['POST'])
@@ -154,7 +161,7 @@ def page_not_found(e):
     Flags:
         - Source code
     """
-    return render_template('404.html'), 404
+    return render_template('404.html', flag=FLAGS['not-found']), 404
 
 
 @app.route('/article', methods = ["GET"])
@@ -174,7 +181,7 @@ def article():
     
     # Whitelist default title
     if (title in ['Article title', 'Article title2']):
-        return "Aliquam-eleifend-ornare" 
+        return FLAGS['hidden-form-index'] 
     # Create Table with data
     SQLcon = sqlite3.connect("sqlite3.db")
     SQLcur = SQLcon.cursor()
@@ -192,8 +199,8 @@ def article():
     if (data == False):
         return "No data found in database"
     if (data == True): # Injection sucess
-        return "In-vitae-laoreet"
-    return "Aliquam-eleifend-ornare" 
+        return FLAGS['url-sql-inject']
+    return FLAGS['hidden-form-index']
 
 
 @app.route('/contact')
@@ -217,9 +224,19 @@ def href_redirect(sum):
     if (sum != hash):
         return "Error hash invalid."
     if not(link in ["https://twitter.com", "https://www.instagram.com", "https://www.google.com/"]):
-        return "<h3>Nice job good redirection.</h3> Aliquam-erat-volutpat"
+        return "<h3>Nice job good redirection.</h3> " + FLAGS['href-redirect']
     return redirect(link)
 
 
+def loadConfig(path='./config.yml'):
+    with open(path, 'r') as fp:
+        global FLAGS
+        obj = yaml.safe_load(fp.read())
+        FLAGS = obj['flags']
+        assert (FLAGS is not None)
+        print(f' * Config file loaded: {path}')
+
+
 if (__name__ == "__main__"):
+    loadConfig()
     app.run(debug = True, host="0.0.0.0")
