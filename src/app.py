@@ -4,6 +4,9 @@ import yaml
 
 import sqlite3
 import hashlib
+from pathlib import Path
+
+from steganography import hideTextInImage
 
 app = Flask(__name__)
 
@@ -239,4 +242,6 @@ def loadConfig(path='./config.yml'):
 
 if (__name__ == "__main__"):
     loadConfig()
+    hiddenBasedPath = Path(__file__).parent.resolve().joinpath('static/hidden_based.png')
+    hideTextInImage(FLAGS['image'], hiddenBasedPath)
     app.run(debug = True, host="0.0.0.0")

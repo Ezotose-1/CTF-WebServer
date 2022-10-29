@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# GeneratedImage
+src/static/hidden.png
+
 # db
 *.db
 
