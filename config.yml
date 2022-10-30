@@ -9,7 +9,6 @@ flags:
     not-found:          Maecenas-sit-amet
     cookie:             Morbi-mollis-bibendum
     user-agent:         Morbi-at-turpis
-    # Hardcoded in the image.
     image:              Nullam-imperdiet-in
     hidden-form-index:  Aliquam-eleifend-ornare
     url-sql-inject:     In-vitae-laoreet
