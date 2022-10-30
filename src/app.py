@@ -251,7 +251,6 @@ def loadConfig(path='./config.yml'):
         assert (FLAGS is not None)
         print(f' * Config file loaded: {path}')
 
-
 def init():
     loadConfig()
     hiddenBasedPath = Path(__file__).parent.resolve().joinpath('static/hidden_based.png')
