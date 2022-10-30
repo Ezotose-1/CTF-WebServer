@@ -6,7 +6,7 @@ import sqlite3
 import hashlib
 from pathlib import Path
 
-from steganography import hideTextInImage
+from .steganography import hideTextInImage
 
 app = Flask(__name__)
 
@@ -28,6 +28,7 @@ def index():
     
     :return: Built response
     """
+    global FLAGS
     # Check and set isAdmin cookie
     adminCookie = request.cookies.get('isAdmin') == "True"
     if (adminCookie == True):
@@ -60,6 +61,7 @@ def index_POST():
     Flags:
         - XSRF 
     """    
+    global FLAGS
     if  ('HTTP_ORIGIN' in request.environ) and \
         (request.environ['HTTP_SEC_FETCH_SITE'] == 'cross-site'):
         return FLAGS['xsrf']
@@ -81,6 +83,7 @@ def login_post():
     
     :return: Built response
     """
+    global FLAGS
     if ('username' in request.form and 'password' in request.form ):
         uname, passwd = request.form['username'], request.form['password']
     else:
@@ -106,12 +109,14 @@ def login_post():
 @app.route('/user/login', methods = ['GET'])
 def login_get():
     """ GET Route to admin login page '/user/login' to render the template. """
+    global FLAGS
     return render_template('user/login.html')
 
 
 @app.route('/static/')
 def static_dir():
     """ Route to '/static/' page to render a fake directory listing """
+    global FLAGS
     return render_template('static-listing.html')
 
 
@@ -121,6 +126,7 @@ def rules():
     Render the template.
     No flags in this page.
     """
+    global FLAGS
     return render_template('rules.html', title="rules")
 
 
@@ -134,6 +140,7 @@ def admin():
         - Result of the SQL injection on the html page.
         - 'User-Agent' to fake admin browser. 
     """
+    global FLAGS
     # Check admin token or redirect 
     token = request.cookies.get('token')
     if (token != "q5vpeVphHnaMxQ2eh5brGkaGjUsOk87f"):
@@ -151,6 +158,7 @@ def logout():
     """ POST route to '/admin' page.
     Remote admin token and redirect user.
     """
+    global FLAGS
     response = make_response(redirect('/admin'))
     response.set_cookie("token", "", expires=0)
     return response
@@ -164,6 +172,7 @@ def page_not_found(e):
     Flags:
         - Source code
     """
+    global FLAGS
     return render_template('404.html', flag=FLAGS['not-found']), 404
 
 
@@ -180,6 +189,7 @@ def article():
 
     :param title: Seached article title
     """
+    global FLAGS
     title = request.args.get("title", "\'")
     
     # Whitelist default title
@@ -209,6 +219,7 @@ def article():
 @app.route('/contact')
 def contact():
     """ Route to '/contact' that show redirection """
+    global FLAGS
     return render_template('contact.html', title='contact')
 
 
@@ -222,6 +233,7 @@ def href_redirect(sum):
     Flags:
         - Correct fake redirection
     """
+    global FLAGS
     link = request.args.get("href")
     hash = hashlib.md5(link.encode()).hexdigest()
     if (sum != hash):
@@ -240,8 +252,11 @@ def loadConfig(path='./config.yml'):
         print(f' * Config file loaded: {path}')
 
 
-if (__name__ == "__main__"):
+def init():
     loadConfig()
     hiddenBasedPath = Path(__file__).parent.resolve().joinpath('static/hidden_based.png')
     hideTextInImage(FLAGS['image'], hiddenBasedPath)
+init()
+
+if (__name__ == "__main__"):
     app.run(debug = True, host="0.0.0.0")
