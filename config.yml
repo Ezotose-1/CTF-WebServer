@@ -3,8 +3,7 @@ flags:
     source-comment:     Integer-nec-eros
     response-header:    Integer-luctus-felis
     request-header:     Quisque-placerat-commodo
-    # Harcoded in the CSV
-    static-folder:      Phasellus-blandit-turpis
+    static-csv:         Phasellus-blandit-turpis
     admin-page:         Mauris-fermentum-massa
     not-found:          Maecenas-sit-amet
     cookie:             Morbi-mollis-bibendum

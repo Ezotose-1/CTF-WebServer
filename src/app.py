@@ -6,7 +6,8 @@ import sqlite3
 import hashlib
 from pathlib import Path
 
-from .steganography import hideTextInImage
+from steganography import hideTextInImage
+from loading import genCSV
 
 app = Flask(__name__)
 
@@ -66,7 +67,7 @@ def index_POST():
         (request.environ['HTTP_SEC_FETCH_SITE'] == 'cross-site'):
         return FLAGS['xsrf']
 
-    if not('name' in request.form):
+    if 'name' not in request.form:
         return redirect('/')
     return redirect('/article?title=%s' % request.form['name'])
 
@@ -127,7 +128,7 @@ def rules():
     No flags in this page.
     """
     global FLAGS
-    return render_template('rules.html', title="rules")
+    return render_template('rules.html', title="rules", flagCount = len(FLAGS))
 
 
 @app.route('/admin')
@@ -255,6 +256,9 @@ def init():
     loadConfig()
     hiddenBasedPath = Path(__file__).parent.resolve().joinpath('static/hidden_based.png')
     hideTextInImage(FLAGS['image'], hiddenBasedPath)
+    csvPath = Path(__file__).parent.resolve().joinpath('static/flag.csv')
+    genCSV(flag=FLAGS['static-csv'], path=csvPath)
+
 init()
 
 if (__name__ == "__main__"):
