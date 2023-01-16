@@ -20,7 +20,7 @@ def init(FLAGS):
     hideTextInImage(FLAGS['image'], hiddenBasedPath)
     csvPath = Path(__file__).parent.resolve().joinpath('static/flag.csv')
     genCSV(flag=FLAGS['static-csv'], path=csvPath)
-    generateOldDatabase(flag="weak-old-db")
+    generateOldDatabase(flag=FLAGS["weak-old-db"])
 
 
 def genCSV(flag, path):

@@ -1,0 +1,18 @@
+# Version 1.0.4 notes
+
+Update features :
+ * {+} New article system
+ * {+} User login page
+ * {-} Remove old database
+ * {+} Caesar -> sha256 with salt
+ * {+} Change date format
+ * {+} Kraken drowned
+ * {-} Remove file "Who is Segfault?"
+ * {-} Fix bugs
+ * {-} Fix typo 'Votez' into 'Votai'
+ * // TODO -> Test.
+
+
+
+--
+VotaiTest. - 2023

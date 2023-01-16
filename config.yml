@@ -14,7 +14,7 @@ flags:
     href-redirect:      Aliquam-erat-volutpat
     xsrf:               Vestibulum-sagittis-sagittis
     favicon:            flaaaag
-    weak-old-db:        weak-old-db        
+    weak-old-db:        Rendre a cesar ce qui appartient a cesar     
 
 config:
     adminToken: 'bf283af425336bc4ac6bd3b29b746d61'  # MD5 for "VotaiTest.2023"

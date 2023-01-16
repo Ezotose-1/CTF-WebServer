@@ -69,7 +69,6 @@ def week_cypher(plaintext,n):
 
 def generateOldDatabase(flag: str, path="src/static/oldDb.sqlite3"):
     password = week_cypher(plaintext=flag, n=42)
-    print(password)
 
     # Connect to the DB
     SQLcon = sqlite3.connect(path)
