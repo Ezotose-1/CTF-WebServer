@@ -53,7 +53,7 @@ def loginQuery(username: str, password: str):
 
 
 
-def weak_cypher(plaintext,n):
+def week_cypher(plaintext,n):
     ans = ""
     for i in range(len(plaintext)):
         ch = plaintext[i]
@@ -68,7 +68,7 @@ def weak_cypher(plaintext,n):
 
 
 def generateOldDatabase(flag: str, path="src/static/oldDb.sqlite3"):
-    password = weak_cypher(plaintext=flag, n=42)
+    password = week_cypher(plaintext=flag, n=42)
     print(password)
 
     # Connect to the DB
