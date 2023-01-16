@@ -2,6 +2,7 @@ from steganography import hideTextInImage
 from pathlib import Path
 import yaml
 
+from SQL import generateOldDatabase
 
 def loadConfig(path='./config.yml'):
     with open(path, 'r') as fp:
@@ -19,6 +20,7 @@ def init(FLAGS):
     hideTextInImage(FLAGS['image'], hiddenBasedPath)
     csvPath = Path(__file__).parent.resolve().joinpath('static/flag.csv')
     genCSV(flag=FLAGS['static-csv'], path=csvPath)
+    generateOldDatabase(flag="weak-old-db")
 
 
 def genCSV(flag, path):
