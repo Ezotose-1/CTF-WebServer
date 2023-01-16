@@ -1,17 +1,15 @@
 from flask import *
 from flask_cors import CORS
-import yaml
 
-import sqlite3
 import hashlib
-from pathlib import Path
 
-from steganography import hideTextInImage
-from loading import genCSV
+from loading import init, loadConfig
+from SQL import articleQuery, loginQuery
 
 app = Flask(__name__)
 
 FLAGS = None
+CONFIG = None
 
 # Allow Cross-origin resource sharing
 CORS(app)
@@ -26,6 +24,7 @@ def index():
         - Hidden 'WIP' code with a http form
         - HTML display none 
         - HTML comment
+        - Favicon
     
     :return: Built response
     """
@@ -46,11 +45,12 @@ def index():
     response = make_response(render_template('index.html',
                         title="home",
                         hideFlag=FLAGS['source-hide'],
-                        commentFlag=FLAGS['source-comment']
-                    ))
+                        commentFlag=FLAGS['source-comment']))
+
     response.headers['X-HFlags'] = FLAGS['response-header']
     response.headers['X-HFlags-found'] = 'False'
     response.set_cookie('isAdmin', 'False')
+
     return response
 
 
@@ -67,9 +67,9 @@ def index_POST():
         (request.environ['HTTP_SEC_FETCH_SITE'] == 'cross-site'):
         return FLAGS['xsrf']
 
-    if 'name' not in request.form:
-        return redirect('/')
-    return redirect('/article?title=%s' % request.form['name'])
+    if 'name' in request.form:
+        return redirect( f'/article?title={request.form["name"]}' )
+    return redirect('/')
 
 
 @app.route('/user/login', methods = ['POST'])
@@ -84,25 +84,22 @@ def login_post():
     
     :return: Built response
     """
-    global FLAGS
+    global FLAGS, CONFIG
     if ('username' in request.form and 'password' in request.form ):
         uname, passwd = request.form['username'], request.form['password']
     else:
         uname, passwd = "", ""
 
     # Login to Allow SQL injection #
-    SQLcon = sqlite3.connect("sqlite3.db")
-    SQLcur = SQLcon.cursor()
-    SQLcmd = "SELECT CASE WHEN 'pib'='"+ passwd +"' AND 'pib'='"+ uname +"' THEN True ELSE False END;"
     try:
-        data = SQLcur.execute(SQLcmd).fetchone()[0] == 1
-    except:
+        data = loginQuery(username=uname, password=passwd)
+    except Exception as e:
         return redirect('/user/login')
     
     # Connect user by adding a 'admin' token in cookies
     if (data):
         response = make_response(redirect('/admin'))
-        response.set_cookie("token", "q5vpeVphHnaMxQ2eh5brGkaGjUsOk87f")
+        response.set_cookie("token", CONFIG.get('adminToken'))
         return response    
     return redirect('/user/login')
 
@@ -141,17 +138,17 @@ def admin():
         - Result of the SQL injection on the html page.
         - 'User-Agent' to fake admin browser. 
     """
-    global FLAGS
+    global FLAGS, CONFIG
     # Check admin token or redirect 
     token = request.cookies.get('token')
-    if (token != "q5vpeVphHnaMxQ2eh5brGkaGjUsOk87f"):
+    if (token != CONFIG.get('adminToken')):
         return redirect('/user/login')
     
     # Check userAgent for Admin browser
     userAgent = request.headers.get('User-Agent')
-    if (userAgent == "Admin/18.2"):
+    if (userAgent.startswith("Admin/18.2")):
         return render_template('/admin.html', code=FLAGS['user-agent'], flag=FLAGS['admin-page'])
-    return render_template('/admin.html', code="@;]pb(:kR[>'(&l[L)V&", flag=FLAGS['admin-page'])
+    return render_template('/admin.html', code="__WRONG_BROWSER__", flag=FLAGS['admin-page'])
 
 
 @app.route('/admin', methods = ['POST'])
@@ -196,18 +193,8 @@ def article():
     # Whitelist default title
     if (title in ['Article title', 'Article title2']):
         return FLAGS['hidden-form-index'] 
-    # Create Table with data
-    SQLcon = sqlite3.connect("sqlite3.db")
-    SQLcur = SQLcon.cursor()
-    SQLcmd = "CREATE TABLE IF NOT EXISTS 'articles' ('title' varchar(50) NOT NULL DEFAULT 'Article title');"
-    SQLcur.execute(SQLcmd)
-    SQLcmd = "INSERT INTO 'articles' ('title') VALUES ('Article Title'), ('Article Title2');"
-    SQLcur.execute(SQLcmd)
-    # Injection
-    SQLcmd = "SELECT * FROM articles WHERE title='"+ title +"';"
-    app.logger.debug(SQLcmd)
     try:
-        data = SQLcur.execute(SQLcmd).fetchone() != None
+        data = articleQuery(title)
     except:
         return "SQL Error please contact administrator. This incident will be reported.", 500
     if (data == False):
@@ -235,31 +222,19 @@ def href_redirect(sum):
         - Correct fake redirection
     """
     global FLAGS
-    link = request.args.get("href")
+    link = request.args.get("href", "www.votaite.st")
     hash = hashlib.md5(link.encode()).hexdigest()
     if (sum != hash):
         return "Error hash invalid."
-    if link not in ["https://twitter.com", "https://www.instagram.com", "https://www.google.com/"]):
-        return "<h3>Nice job good redirection.</h3> " + FLAGS['href-redirect']
+    if link not in ["https://twitter.com", "https://www.instagram.com", "https://www.google.com/"]:
+        return f"<h3>Nice job good redirection.</h3> {FLAGS['href-redirect']}"
     return redirect(link)
 
 
-def loadConfig(path='./config.yml'):
-    with open(path, 'r') as fp:
-        global FLAGS
-        obj = yaml.safe_load(fp.read())
-        FLAGS = obj['flags']
-        assert (FLAGS is not None)
-        print(f' * Config file loaded: {path}')
-
-def init():
-    loadConfig()
-    hiddenBasedPath = Path(__file__).parent.resolve().joinpath('static/hidden_based.png')
-    hideTextInImage(FLAGS['image'], hiddenBasedPath)
-    csvPath = Path(__file__).parent.resolve().joinpath('static/flag.csv')
-    genCSV(flag=FLAGS['static-csv'], path=csvPath)
-
-init()
+FLAGS, CONFIG = loadConfig()
+init(FLAGS)
 
 if (__name__ == "__main__"):
-    app.run(debug = True, host="0.0.0.0")
+    app.run(debug = True,
+            host=CONFIG.get('host'),
+            port=CONFIG.get('port'))
