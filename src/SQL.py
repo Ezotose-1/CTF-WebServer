@@ -53,7 +53,7 @@ def loginQuery(username: str, password: str):
 
 
 
-def week_cypher(plaintext,n):
+def weak_cypher(plaintext,n):
     ans = ""
     for i in range(len(plaintext)):
         ch = plaintext[i]
