@@ -1,3 +1,26 @@
+from steganography import hideTextInImage
+from pathlib import Path
+import yaml
+
+
+def loadConfig(path='./config.yml'):
+    with open(path, 'r') as fp:
+        global FLAGS, CONFIG
+        obj = yaml.safe_load(fp.read())
+        FLAGS = obj['flags']
+        CONFIG = obj['config']
+        assert (FLAGS is not None)
+        print(f' * Config file loaded: {path}')
+    return FLAGS, CONFIG
+
+
+def init(FLAGS):
+    hiddenBasedPath = Path(__file__).parent.resolve().joinpath('static/hidden_based.png')
+    hideTextInImage(FLAGS['image'], hiddenBasedPath)
+    csvPath = Path(__file__).parent.resolve().joinpath('static/flag.csv')
+    genCSV(flag=FLAGS['static-csv'], path=csvPath)
+
+
 def genCSV(flag, path):
     content = f"""
 name,landmass,zone,area,population,language,religion,bars,stripes,colours,red,green,blue,gold,white,black,orange,mainhue,circles,crosses,saltires,quarters,sunstars,crescent,triangle,icon,animate,text,topleft,botright
