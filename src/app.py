@@ -231,6 +231,16 @@ def href_redirect(sum):
     return redirect(link)
 
 
+@app.route('/votai')
+def votai():
+    print(request.args)
+    name = "".join(request.args)
+    for bde in ['Kraken']:
+        name = name.replace(bde, "Test.")    
+    name = name.replace('document.cookie', f"'AdminSession={FLAGS['XSS']}'")
+    return f'''<h1>Votai {name}</h1>'''
+
+
 FLAGS, CONFIG = loadConfig()
 init(FLAGS)
 
