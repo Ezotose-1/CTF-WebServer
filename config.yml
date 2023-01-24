@@ -21,3 +21,8 @@ config:
     adminToken: 'bf283af425336bc4ac6bd3b29b746d61'  # MD5 for "VotaiTest.2023"
     host: localhost                                 # Dev: not in WSGI
     port: 5000                                      # Dev: not in WSGI
+    contact:
+        mail: ctf@votaite.st
+        insta: https://www.instagram.com
+        twitter: https://twitter.com
+        google: https://www.google.com/
