@@ -1,0 +1,203 @@
+#! /usr/bin/python3
+
+from os import system, environ
+
+
+class c:
+    blue = '\033[94m'
+    cyan = '\033[96m'
+    green = '\033[92m'
+    orange = '\033[93m'
+    rouge = '\033[91m'
+    HEADER = '\033[95m'
+    CLEAR = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+class FileFolder():
+    """ File and Folder nodes objects """
+    def __init__(self, filename, content, type) -> None:
+        self.filename = filename
+        self.content = content
+        self.type = type # folder/file/bin
+    
+    def __str__(self) -> str:
+        if self.type == "file":
+            return f'{""}{self.filename}{c.CLEAR}'
+        elif self.type == "folder":
+            return f'{c.blue}{self.filename}{c.CLEAR}'
+        else:
+            return f'{c.green}{self.filename}{c.CLEAR}'
+
+
+current_dir = '/'
+user = environ.get('USERNAME', 'user')
+
+""" DEFAULT ARCHITECTURE """
+tree = [
+    FileFolder('/', [
+        FileFolder("file1", "-- BINARY FILE --", "bin"),
+        FileFolder("votaite.st", "le flag", "file"),
+        FileFolder("mma.txt", "0 tracas 0 blabla", "file"),
+
+        FileFolder("dir1", [
+            FileFolder("readme.md", "# Hello World!", "file"),
+        ], "folder"),
+        FileFolder("folder2", [], "folder"),
+    ], 'folder'),
+]
+
+
+def findElement(filename: str, pos=tree[0]):
+    """ Find a node by it name """
+    if (filename != '/'):
+        path = filename.split('/')
+        if (len(path) == 0):
+            return None
+        filename = path[-1]
+    if pos.filename == filename:
+        return pos
+    if pos.type == 'folder':
+        if pos.content is None:
+            return None
+        for node in pos.content:
+            res = findElement(filename, pos=node)
+            if res:
+                return res
+    return None
+
+
+def getParams(args):
+    return list(filter(lambda a: a.startswith('-'), args))
+
+
+def cd(*args, **kwargs):
+    """ Assign the searched folder to the current position """
+    global current_dir
+    if len(args) == 0 or args[0] == "..":
+        current_dir = "/"
+        return True
+    if args[0] == '.':
+        return True
+    pos = findElement(args[0])
+    if pos is None or pos.type != 'folder':
+        print(f"42sh: cd: {args[0]}: no such directory.")
+        return False
+    current_dir = pos.filename
+    return True
+
+
+def cat(*args, **kwargs):
+    """ Read the searched file """
+    if (len(args) == 0):
+        print(f"cat: no filename enterer.")
+        return False
+    file = findElement(args[0])
+    if (file is None):
+        print(f"cat: cannot access to {args[0]}: no such file.")
+        return False
+    if (file.type != "file"):
+        print(f"cat: {args[0]} is not a readable file.")
+        return False
+    print(f'''{file.filename}:
+{file.content}''')
+    return True
+
+
+def ls(*args, **kwargs):
+    """ List all element in the current folder or the selected one """
+    toList = []
+    pos = findElement(current_dir)
+    if (pos is None or pos.type != 'folder'):
+        return False
+
+    if len(args) == 0:
+        toList += map(lambda o: str(o), pos.content)
+    else:
+        pos = findElement(args[0])
+        if (pos is None):
+            print(f"ls: cannot access to {args[0]}: no such file or directory.")
+            return False
+        if (pos.type == 'folder'):
+            toList += map(lambda o: str(o), pos.content)
+        else:
+            toList += [pos.filename]
+    print('  '.join(toList))
+    return True
+
+
+
+def sh_help():
+    print(""" 
+Epita 42SH, version 0.1.1-Test. (x86_64-pc-test-42sh)
+Ces commandes de shell sont définies de manière interne. Saisissez « help » pour voir cette liste.
+
+Une astérisque (*) à côté d'un nom signifie que la commande est désactivée.
+ls [path]               List all node at the position
+cat filename            Read a file
+exit                    Quit the server and votai
+cd [path]               Move in the filesystem
+help                    List all commands
+flags*                  List all the flags
+clear                   Clear the console
+""")
+
+
+def startup():
+    system('clear')
+    print('''  _______          _      
+ |__   __|        | |     
+    | |  ___  ___ | |_    
+    | | / _ \/ __|| __|   
+    | ||  __/\__ \| |_  _ 
+    |_| \___||___/ \__|(_)
+                          ''')
+
+
+""" All implemented shell commands """
+commands = {
+    'ls': ls,
+    'cat': cat,
+    'exit': quit,
+    'cd': cd,
+    'help': sh_help,
+    'clear': startup
+}
+
+def quit():
+    """ Quit the shell """
+    exit(1)
+
+
+def getInput() -> bool:
+    """ Print the prompt and ask the user for input """
+    prompt = f"""{c.orange}{user}@votaite.st{c.blue}
+{current_dir}{'/' if current_dir != '/' else ''} 42sh>_ {c.CLEAR}"""
+
+    inputs = input(prompt).split()
+    if len(inputs) == 0:
+        return True
+    
+    cmd = commands.get(inputs[0], None)
+    if not cmd:
+        print(f'{inputs[0]} : unknown command, 42sh still WIP..')
+        return False
+    cmd(*inputs[1:])
+    return True
+
+
+if (__name__ == '__main__'):
+    startup()
+    print('    Use ``help`` command to list all available commands.')
+    try:
+        while True:
+            try:
+                getInput()
+                print()
+            except KeyboardInterrupt:
+                print("\n")
+                pass
+    except:
+        print('\nOublie pas de Votai')
+        exit(1)
