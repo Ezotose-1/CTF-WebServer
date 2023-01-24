@@ -1,5 +1,5 @@
 body {
-    background-color: #171a1f;
+    background-color: #22272e;
     color:white;
 }
 
@@ -29,10 +29,20 @@ flag {
 }
 
 .navbar-color {
-    background-color: #26282b;
+    background-color: #2d333b;
     color: #d0cdca;
 }
 
 .card {
     margin-bottom: 80px;
+    border: 1px solid #444c56;
+}
+
+.card-header {
+    background-color: #2d333b;
+    border-bottom: 1px solid #444c56;
+}
+
+.nav-item {
+    margin-left: 10px;
 }
