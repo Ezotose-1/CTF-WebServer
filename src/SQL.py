@@ -17,7 +17,7 @@ def articleQuery(title: str):
     # Create Table with data
     SQLcmd = "CREATE TABLE IF NOT EXISTS 'articles' ('title' varchar(50) NOT NULL DEFAULT 'Article title');"
     SQLcur.execute(SQLcmd)
-    SQLcmd = "INSERT INTO 'articles' ('title') VALUES ('Article Title'), ('Article Title2');"
+    SQLcmd = "INSERT INTO 'articles' ('title') VALUES ('Article title'), ('Article title2');"
     SQLcur.execute(SQLcmd)
 
     # Injection
@@ -25,6 +25,7 @@ def articleQuery(title: str):
     data = SQLcur.execute(SQLcmd).fetchone() != None
 
     return data
+
 
 
 def loginQuery(username: str, password: str):
@@ -85,6 +86,8 @@ def generateOldDatabase(flag: str, path="src/static/oldDb.sqlite3"):
     # Save it
     SQLcon.commit()
     return True
+
+
 
 if (__name__ == "__main__"):
     generateOldDatabase("Je Vote Test.")
