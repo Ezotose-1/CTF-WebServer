@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 from flask import *
 from flask_cors import CORS
 
@@ -85,11 +87,8 @@ def login_post():
     :return: Built response
     """
     global FLAGS, CONFIG
-    if ('username' in request.form and 'password' in request.form ):
-        uname, passwd = request.form['username'], request.form['password']
-    else:
-        uname, passwd = "", ""
 
+    uname, passwd = request.form.get("username", ""), request.form.get("password", "")
     # Login to Allow SQL injection #
     try:
         data = loginQuery(username=uname, password=passwd)
@@ -192,23 +191,39 @@ def article():
     
     # Whitelist default title
     if (title in ['Article title', 'Article title2']):
-        return FLAGS['hidden-form-index'] 
+        return { 'api_flag1': FLAGS['hidden-form-index'] }
     try:
         data = articleQuery(title)
     except:
-        return "SQL Error please contact administrator. This incident will be reported.", 500
+        return {'error': "SQL Error please contact administrator. This incident will be reported."}, 500
     if (data == False):
-        return "No data found in database"
+        return {'error': "No data found in database"}, 404
     if (data == True): # Injection sucess
-        return FLAGS['url-sql-inject']
-    return FLAGS['hidden-form-index']
+        return { 'api_flag2': FLAGS['url-sql-inject']}
+    return { 'api_flag1': FLAGS['hidden-form-index']}
 
 
 @app.route('/contact')
 def contact():
     """ Route to '/contact' that show redirection """
     global FLAGS
-    return render_template('contact.html', title='contact')
+    URL = CONFIG.get('contact')
+    twitterLink =  hashlib.md5(URL.get('twitter').encode()).hexdigest()
+    instaLink =  hashlib.md5(URL.get('insta').encode()).hexdigest()
+    googleLink =  hashlib.md5(URL.get('google').encode()).hexdigest()
+    return render_template('contact.html', title='contact',
+        email = URL.get('mail'),
+        hash = {
+            '1': twitterLink,
+            '2': instaLink,
+            '3': googleLink,
+        },
+        links = {
+            '1': URL.get('twitter'),
+            '2': URL.get('insta'),
+            '3': URL.get('google'),
+        },
+    )
 
 
 @app.route('/redirect/<sum>')
@@ -222,11 +237,13 @@ def href_redirect(sum):
         - Correct fake redirection
     """
     global FLAGS
+    URL = CONFIG.get('contact')
     link = request.args.get("href", "www.votaite.st")
     hash = hashlib.md5(link.encode()).hexdigest()
+    print(sum, hash)
     if (sum != hash):
         return "Error hash invalid."
-    if link not in ["https://twitter.com", "https://www.instagram.com", "https://www.google.com/"]:
+    if link not in [URL.get('twitter'), URL.get('insta'), URL.get('google')]:
         return f"<h3>Nice job good redirection.</h3> {FLAGS['href-redirect']}"
     return redirect(link)
 
@@ -238,7 +255,7 @@ def votai():
     for bde in ['Kraken']:
         name = name.replace(bde, "Test.")    
     name = name.replace('document.cookie', f"'AdminSession={FLAGS['XSS']}'")
-    return f'''<h1>Votai {name}</h1>'''
+    return render_template('vote.html', title='votai', value=name)
 
 
 FLAGS, CONFIG = loadConfig()
