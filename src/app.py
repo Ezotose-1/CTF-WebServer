@@ -16,6 +16,7 @@ CONFIG = None
 # Allow Cross-origin resource sharing
 CORS(app)
 
+
 @app.route('/')
 def index():
     """Route to index page '/'.
@@ -208,10 +209,13 @@ def contact():
     """ Route to '/contact' that show redirection """
     global FLAGS
     URL = CONFIG.get('contact')
+
     twitterLink =  hashlib.md5(URL.get('twitter').encode()).hexdigest()
     instaLink =  hashlib.md5(URL.get('insta').encode()).hexdigest()
     googleLink =  hashlib.md5(URL.get('google').encode()).hexdigest()
-    return render_template('contact.html', title='contact',
+
+    return render_template('contact.html',
+        title='contact',
         email = URL.get('mail'),
         hash = {
             '1': twitterLink,
@@ -240,7 +244,6 @@ def href_redirect(sum):
     URL = CONFIG.get('contact')
     link = request.args.get("href", "www.votaite.st")
     hash = hashlib.md5(link.encode()).hexdigest()
-    print(sum, hash)
     if (sum != hash):
         return "Error hash invalid."
     if link not in [URL.get('twitter'), URL.get('insta'), URL.get('google')]:
@@ -250,12 +253,18 @@ def href_redirect(sum):
 
 @app.route('/votai')
 def votai():
-    print(request.args)
     name = "".join(request.args)
     for bde in ['Kraken']:
         name = name.replace(bde, "Test.")    
     name = name.replace('document.cookie', f"'AdminSession={FLAGS['XSS']}'")
-    return render_template('vote.html', title='votai', value=name)
+    return render_template('vote.html', title='votai', value=name, hasvote=request.cookies.get('hasVotai', False))
+
+
+@app.route('/votai/ok')
+def a_votai():
+    resp = make_response(redirect('/votai?Test.'))
+    resp.set_cookie('hasVotai', "Test.")
+    return resp
 
 
 FLAGS, CONFIG = loadConfig()
