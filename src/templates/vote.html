@@ -1,10 +1,105 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    <title>Je vote !</title>
+<title>Je vote !</title>
 {% endblock %}
 
 {% block body %}
 
-    <h1 class="text-center title" >Votai {{value}}</h1>
+<h1 class="text-center title">Votai {{value}}</h1>
+
+<div class="mt-5">
+    <div id="in-vote">
+        {% if hasvote %}
+            <div class="text-center">
+                <h2> A Votai !</h2>
+            </div>
+        {% else %}
+        <div id="mydiv">
+            <img src="{{ url_for('static', filename='T_Test.png') }}" class="rounded mx-auto d-block" alt="...">
+        </div>
+        <br>
+        <div>
+            <img id="vote" src="{{ url_for('static', filename='vote.png') }}" class="rounded mx-auto d-block" alt="...">
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if not hasvote %}
+<style>
+    #mydiv {
+        position: absolute;
+        z-index: 9;
+        background-color: #f1f1f1;
+        border: 1px solid #d3d3d3;
+        text-align: center;
+        cursor: grabbing;
+    }
+</style>
+
+<script>
+    /* Make the DIV element draggable: */
+    dragElement(document.getElementById("mydiv"));
+    const vote = document.getElementById('vote');
+    const rect = vote.getBoundingClientRect();
+
+    function dragElement(elmnt)
+    {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        elmnt.onmousedown = dragMouseDown;
+        elmnt.onmouseup = dragMouseUp; 
+
+        function dragMouseUp(e)
+        {
+            const left = vote.offsetLeft;
+            const right = vote.offsetLeft + vote.offsetWidth;
+            const top = vote.offsetTop;
+            const bottom = vote.offsetTop + vote.offsetHeight;
+            
+            var isInX = right >= pos3 && pos3 >= left;
+            var isInY = bottom >= pos4 && pos3 >= top;
+            var isIn = isInX && isInY;
+
+            if (isIn)
+            {
+                var v = document.getElementById('in-vote');
+                v.innerHTML = '<div class="text-center"><h2> A Votai !</h2></div>';
+                document.location = '/votai/ok'
+            }
+        }
+
+        function dragMouseDown(e)
+        {
+            e = e || window.event;
+            e.preventDefault();
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e)
+        {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            // set the element's new position:
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement()
+        {
+            // stop moving when mouse button is released:
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+</script>
+{% endif %}
 {% endblock %}
