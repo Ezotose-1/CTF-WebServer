@@ -57,6 +57,7 @@
             const top = vote.offsetTop;
             const bottom = vote.offsetTop + vote.offsetHeight;
             
+            /* Check element in the other */
             var isInX = right >= pos3 && pos3 >= left;
             var isInY = bottom >= pos4 && pos3 >= top;
             var isIn = isInX && isInY;
@@ -75,6 +76,8 @@
             e.preventDefault();
             pos3 = e.clientX;
             pos4 = e.clientY;
+            
+            /* Assign function on mouse event */
             document.onmouseup = closeDragElement;
             document.onmousemove = elementDrag;
         }
@@ -83,19 +86,21 @@
         {
             e = e || window.event;
             e.preventDefault();
-            // calculate the new cursor position:
+            
+            /* calculate cursor position */
             pos1 = pos3 - e.clientX;
             pos2 = pos4 - e.clientY;
             pos3 = e.clientX;
             pos4 = e.clientY;
-            // set the element's new position:
+
+            /* Update element position */
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
         }
 
         function closeDragElement()
         {
-            // stop moving when mouse button is released:
+            /* stop moving when mouse button is released */
             document.onmouseup = null;
             document.onmousemove = null;
         }
