@@ -147,8 +147,8 @@ def admin():
     # Check userAgent for Admin browser
     userAgent = request.headers.get('User-Agent')
     if (userAgent.startswith("Admin/18.2")):
-        return render_template('/admin.html', code=FLAGS['user-agent'], flag=FLAGS['admin-page'])
-    return render_template('/admin.html', code="__WRONG_BROWSER__", flag=FLAGS['admin-page'])
+        return render_template('/admin.html', code=FLAGS['user-agent'], flag=FLAGS['admin-page'], ssh=CONFIG['sshAccess'])
+    return render_template('/admin.html', code="__WRONG_BROWSER__", flag=FLAGS['admin-page'], ssh=CONFIG['sshAccess'])
 
 
 @app.route('/admin', methods = ['POST'])

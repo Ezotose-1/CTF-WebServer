@@ -26,3 +26,4 @@ config:
         insta: https://www.instagram.com
         twitter: https://twitter.com
         google: https://www.google.com/
+    sshAccess: user@ctf.ezodev.tk
