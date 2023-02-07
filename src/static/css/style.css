@@ -7,6 +7,12 @@ flag {
     display: none;
 }
 
+.container-f {
+    background-color: #272c34;
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: rgb(0, 0, 0) 0px 20px 30px -10px;
+}
+
 .container-e {
     background-color: #272c34;
     position: absolute;
@@ -16,7 +22,15 @@ flag {
     bottom: 0;
     border: 2px solid rgba(255,255,255,0.1);
     box-shadow: rgb(0, 0, 0) 0px 20px 30px -10px;
-  }
+}
+
+.chat-card {
+    border: 2px solid #1e4173;
+}
+.chat-card-header {
+    background-color: #13233a;
+    border-bottom: 2px solid #1e4173;
+}
 
 .title {
     margin-top: 20px;

@@ -15,12 +15,12 @@ def loadConfig(path='./config.yml'):
     return FLAGS, CONFIG
 
 
-def init(FLAGS):
+def init(FLAGS, CONFIG):
     hiddenBasedPath = Path(__file__).parent.resolve().joinpath('static/hidden_based.png')
     hideTextInImage(FLAGS['image'], hiddenBasedPath)
     csvPath = Path(__file__).parent.resolve().joinpath('static/flag.csv')
     genCSV(flag=FLAGS['static-csv'], path=csvPath)
-    generateOldDatabase(flag=FLAGS["weak-old-db"])
+    generateOldDatabase(username=CONFIG['weakUserName'], password="saucisson2008")
 
 
 def genCSV(flag, path):

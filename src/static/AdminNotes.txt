@@ -4,7 +4,7 @@ Update features :
  * {+} New article system
  * {+} User login page
  * {-} Remove old database
- * {+} Caesar -> sha256 with salt
+ * {+} sha256 add salt to stored passwd
  * {+} Change date format
  * {+} Kraken drowned
  * {-} Remove file "Who is Segfault?"

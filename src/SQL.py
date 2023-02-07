@@ -1,4 +1,5 @@
 import sqlite3
+from hashlib import sha256
 
 def articleQuery(title: str):
     """ Run an SQL Query to an fake database to allow SQL injection
@@ -54,22 +55,13 @@ def loginQuery(username: str, password: str):
 
 
 
-def week_cypher(plaintext,n):
-    ans = ""
-    for i in range(len(plaintext)):
-        ch = plaintext[i]
-        if ch.isalpha() is False:
-            ans+=ch
-        elif (ch.isupper()):
-            ans += chr((ord(ch) + n-65) % 26 + 65)      
-        else:
-            ans += chr((ord(ch) + n-97) % 26 + 97)
-    return ans
+def week_cypher(plaintext):
+    return sha256(plaintext.encode()).hexdigest()
 
 
 
-def generateOldDatabase(flag: str, path="src/static/oldDb.sqlite3"):
-    password = week_cypher(plaintext=flag, n=42)
+def generateOldDatabase(username: str, password: str, path="src/static/oldDb.sqlite3"):
+    password = week_cypher(plaintext=password)
 
     # Connect to the DB
     SQLcon = sqlite3.connect(path)
@@ -80,7 +72,9 @@ def generateOldDatabase(flag: str, path="src/static/oldDb.sqlite3"):
     SQLcur.execute(SQLcmd)
     SQLcmd = "DELETE FROM 'users';"
     SQLcur.execute(SQLcmd)
-    SQLcmd = f"INSERT INTO 'users' ('username', 'password') VALUES ('Admin', '{password}');"
+    SQLcmd = f"INSERT INTO 'users' ('username', 'password') VALUES ('{username}', '{password}');"
+    SQLcur.execute(SQLcmd)
+    SQLcmd = f"INSERT INTO 'users' ('username', 'password') VALUES ('Admin', 'cb54bf327a26a4595699574f27c6a3050b2964aa529363daf2d20c24fbaf587d');"
     SQLcur.execute(SQLcmd)
     
     # Save it

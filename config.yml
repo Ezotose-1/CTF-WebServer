@@ -1,25 +1,34 @@
 flags:
+    # In code:
     source-hide:        Aenean-non-orci
     source-comment:     Integer-nec-eros
     response-header:    Integer-luctus-felis
     request-header:     Quisque-placerat-commodo
-    static-csv:         Phasellus-blandit-turpis
-    admin-page:         Mauris-fermentum-massa
     not-found:          Maecenas-sit-amet
     cookie:             Morbi-mollis-bibendum
     user-agent:         Morbi-at-turpis
-    image:              Nullam-imperdiet-in
     hidden-form-index:  Aliquam-eleifend-ornare
-    url-sql-inject:     In-vitae-laoreet
     href-redirect:      Aliquam-erat-volutpat
     xsrf:               Vestibulum-sagittis-sagittis
+    XSS:                LaMeilleureListeResteTest.  
+    # SQL
+    admin-page:         Mauris-fermentum-massa
+    url-sql-inject:     In-vitae-laoreet
+   
+    # Auto generated:
+    image:              Nullam-imperdiet-in
+    static-csv:         Phasellus-blandit-turpis
+    weak-old-db:        VotaiTeeesssTTT.
+
+    # Generate before run:
     favicon:            flaaaag
-    weak-old-db:        Rendre a cesar ce qui appartient a cesar
-    XSS:                LaMeilleureListeResteTest.     
+    ssh-weak-passwd:    le flag
 
 config:
     adminToken: 'bf283af425336bc4ac6bd3b29b746d61'  # MD5 for "VotaiTest.2023"
-    host: localhost                                 # Dev: not in WSGI
+    userToken: 'bd0664280a9674a8730c29b9fec76cf2'
+    weakUserName: 'Joel'
+    host: 0.0.0.0                                   # Dev: not in WSGI
     port: 5000                                      # Dev: not in WSGI
     contact:
         mail: ctf@votaite.st

@@ -78,9 +78,11 @@ def index_POST():
 @app.route('/user/login', methods = ['POST'])
 def login_post():
     """POST Route to admin login page '/user/login'.
-    Create an empty fake data base to launch SQL commands.
-    Compare with admin name and password without SQL escaping.
-    Set an admin cookie to valid connection.
+    1. Connection using weak username (no SQL injection possible)
+       add userToken.
+    2. Create an empty fake data base to launch SQL commands.
+       Compare with admin name and password without SQL escaping.
+       Set an admin cookie to valid connection.
     
     Flags:
         - SQL Injection
@@ -89,7 +91,17 @@ def login_post():
     """
     global FLAGS, CONFIG
 
+    # weakUser connect: no SQL injection
     uname, passwd = request.form.get("username", ""), request.form.get("password", "")
+    if uname == CONFIG['weakUserName']:
+        if passwd == "saucisson2008":
+            response = make_response(redirect('/admin'))
+            response.set_cookie("token", CONFIG.get('userToken'))
+            return response
+        else:
+            return redirect('/user/login')
+
+    
     # Login to Allow SQL injection #
     try:
         data = loginQuery(username=uname, password=passwd)
@@ -139,16 +151,21 @@ def admin():
         - 'User-Agent' to fake admin browser. 
     """
     global FLAGS, CONFIG
-    # Check admin token or redirect 
     token = request.cookies.get('token')
+    
+    # Not Admin logged user
+    if (token == CONFIG.get('userToken')):
+        return render_template('/admin/loggedUser.html', name=CONFIG['weakUserName'], flag=FLAGS['weak-old-db'])
+
+    # Check admin token or redirect 
     if (token != CONFIG.get('adminToken')):
         return redirect('/user/login')
     
     # Check userAgent for Admin browser
     userAgent = request.headers.get('User-Agent')
     if (userAgent.startswith("Admin/18.2")):
-        return render_template('/admin.html', code=FLAGS['user-agent'], flag=FLAGS['admin-page'], ssh=CONFIG['sshAccess'])
-    return render_template('/admin.html', code="__WRONG_BROWSER__", flag=FLAGS['admin-page'], ssh=CONFIG['sshAccess'])
+        return render_template('/admin/admin.html', code=FLAGS['user-agent'], flag=FLAGS['admin-page'], ssh=CONFIG['sshAccess'], weakUsername=CONFIG['weakUserName'])
+    return render_template('/admin/admin.html', code="__WRONG_BROWSER__", flag=FLAGS['admin-page'], ssh=CONFIG['sshAccess'], weakUsername=CONFIG['weakUserName'])
 
 
 @app.route('/.passwd')
@@ -303,7 +320,7 @@ def a_votai():
 
 
 FLAGS, CONFIG = loadConfig()
-init(FLAGS)
+init(FLAGS, CONFIG)
 
 if (__name__ == "__main__"):
     app.run(debug = True,

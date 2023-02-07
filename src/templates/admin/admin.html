@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Admin Dashboard</title>
+{% endblock %}
+
+{% block body %}
+<div class="container container-f pb-5">
+    <h1 class="text-center title"> Admin Dashboard </h1>
+    <h3 class="text-center">Welcome back <i>{{ flag }}</i>.</h3>
+    <hr>
+
+    <div class="alert {% if code == 'Morbi-at-turpis' %}alert-success{% else %}alert-danger{%endif%}" role="alert">
+        Admin systems are operational. <br>
+        {% if code == 'Morbi-at-turpis' %}
+        User-agent verified.
+        {% else %}
+        Please connect using a local 'Admin' browser with the version 18.2 to use all functionalities and decrypt the
+        code.
+        {% endif %}
+    </div>
+    <p>
+        <b>Local access code : {{ code }}</b>
+    </p>
+
+
+    <hr>
+
+    <ul>
+        <li class="d-flex">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp" alt="avatar"
+                class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" width="60">
+            <div class="card w-100" style="border: 2px solid #1e4173;">
+                <div class="card-header d-flex justify-content-between p-3" style="background-color: #13233a; border-bottom: 2px solid #1e4173;">
+                    <p class="fw-bold mb-0">[RSSI] Julien</p>
+                    <p class="text-muted small mb-0"><i class="far fa-clock"></i> 5 days ago</p>
+                </div>
+                <div class="card-body" style="background-color: #40454b;">
+                    <p class="mb-0">
+                        Hello <b>@everyone</b>, Thursday migration has been done successfully, every system is now operational. To access admin functionalities use the new browser.
+                        We are working on the VPN integration.
+                    </p>
+                    <p class="mb-0">
+                        <b>@{{weakUsername}}</b>, I've removed your account privileges because of the change of the password's database but the account is still up. Please contact me ASAP.   
+                    </p>
+                </div>
+            </div>
+        </li>
+        <li class="d-flex">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp" alt="avatar"
+                class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" width="60">
+            <div class="card w-100" style="border: 2px solid #1e4173;">
+                <div class="card-header d-flex justify-content-between p-3" style="background-color: #13233a; border-bottom: 2px solid #1e4173;">
+                    <p class="fw-bold mb-0">[CTO] Julie</p>
+                    <p class="text-muted small mb-0"><i class="far fa-clock"></i> 4 days ago</p>
+                </div>
+                <div class="card-body" style="background-color: #40454b;">
+                    <p class="mb-0">
+                        Thank's <b>@Julien</b>, please let us know when it will be operational.
+                    </p>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    <hr>
+
+    <form method="POST">
+        <button type="submit" class="btn btn-primary">Log-out</button>
+    </form>
+</div>
+{% endblock %}
