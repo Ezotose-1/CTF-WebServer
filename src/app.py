@@ -230,30 +230,22 @@ def page_not_found(e):
 def article():
     """Route for '/article' page
     Get the param to select an article.
-    Create and fake database with default articles.
+    Create and fake database with default articles and flags.
     Select an article by title. Allow SQL injection.
 
     Flags:
-        - Default flag for getting this hidden page.
-        - SQL injected flag.
+        - Easy injection ('OR 1=1;--)
+        - SQLmap injection in 'flag' table
 
     :param title: Seached article title
+    :return: json throw dictionary 
     """
     global FLAGS
     title = request.args.get("title", "\'")
-    
-    # Whitelist default title
-    if (title in ['Article title', 'Article title2']):
-        return { 'api_flag1': FLAGS['hidden-form-index'] }
-    try:
-        data = articleQuery(title)
-    except:
-        return {'error': "SQL Error please contact administrator. This incident will be reported."}, 500
-    if (data == False):
-        return {'error': "No data found in database"}, 404
-    if (data == True): # Injection sucess
-        return { 'api_flag2': FLAGS['url-sql-inject']}
-    return { 'api_flag1': FLAGS['hidden-form-index']}
+    if 'sleep' in title.lower():
+        return {'error': 'sql not valid'}
+    data = articleQuery(title, FLAGS)
+    return data
 
 
 @app.route('/contact')

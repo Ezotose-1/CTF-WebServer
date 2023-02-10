@@ -1,32 +1,93 @@
-import sqlite3
 from hashlib import sha256
 
-def articleQuery(title: str):
-    """ Run an SQL Query to an fake database to allow SQL injection
-    on article listing query.
-    SQLcmd with user input are never commited to the fake database.
+import sqlite3
+import psycopg2
 
-    :param title: Searched article.
-    :return: Boolean True if valid SQL value,
-             None if there is not such article.
-    :throw: Exception if SQL Error.
+
+class db():
+    DATABASE="postgresctf"
+    USER="postgres"
+    PASSWORD="postgresctfpasswd"
+    HOST="127.0.0.1"
+    PORT="5432"
+
+
+def connectArticleDB():
+    """ Connect into the database and return the db connection object. """
+    try:
+        conn = psycopg2.connect(database = db.DATABASE, user = db.USER, password = db.PASSWORD, host = db.HOST, port = db.PORT)
+    except psycopg2.OperationalError:
+        print(f'database: {db.DATABASE} ; user: {db.USER} ; host: {db.HOST}')
+        print("Cannot open database.")
+        return None
+    else:
+        print("Opened database successfully")
+    return conn
+
+
+def generateArticleDatabase(conn, FLAGS):
+    """ Wipe the db and add cleaned objects. """
+    cur = conn.cursor()
+
+    # articles TABLE
+    cur.execute('''DROP TABLE IF EXISTS articles''')    
+    cur.execute('''CREATE TABLE IF NOT EXISTS articles
+          (ID INT PRIMARY KEY     NOT NULL,
+          TITLE           TEXT    NOT NULL,
+          CONTENT         TEXT     NOT NULL);''')
+    cur.execute(f'''INSERT INTO articles(id, title, content)
+                 VALUES(1, 'Article title', '...'), (2, 'Article title2', '...'), (42, 'flag', '{FLAGS["url-sql-inject"]}');''')
+
+    # flag TABLE
+    cur.execute('''DROP TABLE IF EXISTS flag''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS flag
+          (VALUE          TEXT    NOT NULL);''')
+    cur.execute(f'''INSERT INTO flag(value)
+                 VALUES('{FLAGS["sqlmap"]}');''')
+
+    conn.commit()
+    return True
+
+
+def articleQuery(title: str, FLAGS):
+    """ Run an unsafe query into article table of the database.
+    Connect to local postgreSQL database.
+    Wipe and regenerate the db.
+    Execute an unsafe query.
+    Return all data found.
+
+    :param title: User input.
+    :param FLAGS: dictionary with all flags to add in the db.
+    :return: Dictionary
     """
-    # Connect to the DB
-    SQLcon = sqlite3.connect("sqlite3.db")
-    SQLcur = SQLcon.cursor()
+    conn = connectArticleDB()
+    if not conn:
+        return { 'error': 'cannot connect to the database' }
 
-    # Create Table with data
-    SQLcmd = "CREATE TABLE IF NOT EXISTS 'articles' ('title' varchar(50) NOT NULL DEFAULT 'Article title');"
-    SQLcur.execute(SQLcmd)
-    SQLcmd = "INSERT INTO 'articles' ('title') VALUES ('Article title'), ('Article title2');"
-    SQLcur.execute(SQLcmd)
+    generateArticleDatabase(conn, FLAGS)
 
-    # Injection
-    SQLcmd = f"SELECT * FROM articles WHERE title='{title}';"
-    data = SQLcur.execute(SQLcmd).fetchone() != None
+    query = f'''SELECT * FROM articles WHERE title = '{title}';'''
 
-    return data
+    cur = conn.cursor()
+    try:
+        cur.execute(query)
+    except:
+        return {'error': 'QueryError: this incident will be reported.'}
+    rows = cur.fetchall()
 
+    result = {}
+    for i, r in enumerate(rows):
+        if (len(r) >= 3):
+            result[i] = {
+                'id': r[0],
+                'title': r[1],
+                'content': r[2],
+            }
+        result[i] = r
+
+    conn.commit()
+    conn.close()
+    return result
 
 
 def loginQuery(username: str, password: str):
