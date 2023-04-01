@@ -14,12 +14,12 @@ flags:
     # SQL
     admin-page:         Mauris-fermentum-massa
     url-sql-inject:     In-vitae-laoreet
-    sqlmap:             Ceci est un flag compliqué askip
+    sqlmap:             Donec-rutrum-cursus
    
     # Auto generated:
     image:              Nullam-imperdiet-in
     static-csv:         Phasellus-blandit-turpis
-    weak-old-db:        VotaiTeeesssTTT.
+    weak-old-db:        In-eros-risus
 
     # Generate before run:
     favicon:            flaaaag
@@ -27,7 +27,7 @@ flags:
     reverse-bin:        reverse-me-baby
 
 config:
-    adminToken: 'bf283af425336bc4ac6bd3b29b746d61'  # MD5 for "VotaiTest.2023"
+    adminToken: 'bf283af425336bc4ac6bd3b29b746d61'
     userToken: 'bd0664280a9674a8730c29b9fec76cf2'
     weakUserName: 'Joel'
     host: 0.0.0.0                                   # Dev: not in WSGI
